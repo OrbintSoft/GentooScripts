@@ -11,7 +11,7 @@ cecho "CYAN" "END - packages sync, press enter"
 read -p "$*"
 
 cecho "CYAN" "START - packages install"
-sudo emerge --ask --verbose --update --deep --newuse --exclude 'x11-drivers/nvidia-drivers'  @world
+sudo emerge --ask --verbose --update --deep --newuse --verbose-conflicts --exclude 'x11-drivers/nvidia-drivers sys-kernel/gentoo-sources sys-kernel/linux-headers'  @world
 cecho "CYAN" "END - packages install, press enter"
 
 read -p "$*"
@@ -24,5 +24,5 @@ cecho "CYAN" "START - packages clean"
 sudo emerge --depclean
 cecho "CYAN" "END - packages clean"
 
-cecho "GREEN" "END - packages update, press enter close"
+cecho "GREEN" "END - packages update, press enter to close"
 read -p "$*"
