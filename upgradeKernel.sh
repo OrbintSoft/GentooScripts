@@ -65,14 +65,19 @@ read -p "$*"
 
 cecho "CYAN" "START - build kernel"
 
-cecho "YELLOW" "build kernel"
-make -j6
+cecho "YELLOW" "build modules"
+make modules_prepare
 cecho "YELLOW" "9.press enter to continue"
 read -p "$*"
 
-cecho "YELLOW" "build modules"
-make modules_prepare
+cecho "YELLOW" "build kernel"
+make -j6
 cecho "YELLOW" "10.press enter to continue"
+read -p "$*"
+
+cecho "YELLOW" "rebuild modules"
+emerge --ask @module-rebuild
+cecho "YELLOW" "11.press enter to continue"
 read -p "$*"
 
 cecho "CYAN" "END - build kernel, press enter"
@@ -81,17 +86,21 @@ read -p "$*"
 cecho "CYAN" "START - install kernel"
 cecho "YELLOW" "install modules"
 make modules_install
-
+cecho "YELLOW" "12.press enter to continue"
 read -p "$*"
 
 cecho "YELLOW" "install kernel"
 make install
+cecho "YELLOW" "13.press enter to continue"
 read -p "$*"
 
 cecho "CYAN" "END - install kernel"
 read -p "$*"
 
-dracut --kver=$newKernelName
+cecho "CYAN" "START update initramfs with Dracut"
+dracut --kver="$newKernelVersion-gentoo-x86_64"
+cecho "CYAN" "END update initramfs with Dracut, press enter "
+read -p "$*"
 
 cecho "CYAN" "START - update bootloader"
 grub-mkconfig -o "/boot/grub/grub.cfg"
