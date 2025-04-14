@@ -5,7 +5,7 @@ source "$(dirname "$0")/helper.sh"
 cecho "GREEN" "START - kernel upgrade"
 
 cecho "CYAN" "START - Install packages"
-emerge --ask --verbose --update --deep --newuse --verbose-conflicts sys-kernel/gentoo-sources sys-kernel/linux-headers
+sudo emerge --ask --verbose --update --deep --newuse --verbose-conflicts sys-kernel/gentoo-sources sys-kernel/linux-headers
 cecho "CYAN" "END - Install packages"
 
 cecho "CYAN" "START - choose kernel"
