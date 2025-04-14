@@ -4,6 +4,10 @@ source "$(dirname "$0")/helper.sh"
 
 cecho "GREEN" "START - kernel upgrade"
 
+cecho "CYAN" "START - Install packages"
+emerge --ask --verbose --update --deep --newuse --verbose-conflicts sys-kernel/gentoo-sources sys-kernel/linux-headers
+cecho "CYAN" "END - Install packages"
+
 cecho "CYAN" "START - choose kernel"
 oldKernelPath=$(eselect kernel show | sed -n '2 p' | tr -d ' ')
 echo "Current kernel path: $oldKernelPath"
@@ -94,7 +98,7 @@ make install
 cecho "YELLOW" "13.press enter to continue"
 read -p "$*"
 
-cecho "CYAN" "END - install kernel"
+cecho "CYAN" "END - install kernel, press enter"
 read -p "$*"
 
 cecho "CYAN" "START update initramfs with Dracut"
@@ -104,26 +108,32 @@ read -p "$*"
 
 cecho "CYAN" "START - update bootloader"
 grub-mkconfig -o "/boot/grub/grub.cfg"
-cecho "CYAN" "END - update bootloader"
+cecho "CYAN" "END - update bootloader, press enter"
 read -p "$*"
 
 cecho "CYAN" "START - clean kernel"
 
 cecho "YELLOW" "save new kernel source $newKernelVersion"
 emerge --noreplace "sys-kernel/gentoo-sources:$newKernelVersion"
+cecho "YELLOW" "14.press enter to continue"
 read -p "$*"
 
 cecho "YELLOW" "remove old kernel source $deprecatedVersion"
 emerge --deselect "sys-kernel/gentoo-sources:$deprecatedVersion"
+cecho "YELLOW" "15.press enter to continue"
 read -p "$*"
 
 cecho "YELLOW" "cleanup packages"
 emerge --ask --depclean
+cecho "YELLOW" "16.press enter to continue"
+read -p "$*"
 
 cecho "YELLOW" "remove old kernels"
 eclean-kernel -n 3
+cecho "YELLOW" "17.press enter to continue"
+read -p "$*"
 
-cecho "CYAN" "END - clean kernel"
+cecho "CYAN" "END - clean kernel, press enter"
 
 cecho "GREEN" "END - kernel upgrade, press enter close"
 read -p "$*"
