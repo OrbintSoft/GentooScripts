@@ -32,6 +32,6 @@ if [ -n "$ssh_temp_keyctl" ]; then
 		exit 1
 	fi
 else
-	"ERROR" "❗ ssh_pass_uuid or ssh_temp_keyctl not set, cannot retrieve passphrase."
+	"ERROR" ""ERROR "❗ ssh_pass_uuid or ssh_temp_keyctl not set, cannot retrieve passphrase."
 	exit 1
 fi
