@@ -1,0 +1,21 @@
+name: ShellCheck
+
+on:
+  push:
+  pull_request:
+
+# Least privilege: linting only needs to read the repository contents.
+permissions:
+  contents: read
+
+jobs:
+  shellcheck:
+    name: Lint shell scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@2.0.0
+        env:
+          # SC1091: sources are resolved at runtime via $(dirname "$0"), not statically
+          SHELLCHECK_OPTS: -e SC1091
