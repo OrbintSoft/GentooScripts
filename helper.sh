@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Colors (RED/GREEN/...) are referenced indirectly via ${!1}; ShellCheck can't see that.
+# shellcheck disable=SC2034
 cecho(){
     RED="\033[0;31m"
     GREEN="\033[0;32m"  # <-- [0 means not bold
@@ -10,5 +12,5 @@ cecho(){
     NC="\033[0m" # No Color
 
     # printf "${(P)1}${2} ${NC}\n" # <-- zsh
-    printf "${!1}${2} ${NC}\n" # <-- bash
+    printf '%b%s %b\n' "${!1}" "$2" "$NC" # <-- bash
 }
