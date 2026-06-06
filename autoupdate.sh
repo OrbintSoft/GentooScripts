@@ -16,6 +16,12 @@ cecho "CYAN" "END - packages install, press enter"
 
 read -r -p "$*"
 
+cecho "CYAN" "START - live packages rebuild"
+sudo smart-live-rebuild -- --ask --verbose
+cecho "CYAN" "END - live packages rebuild, press enter"
+
+read -r -p "$*"
+
 cecho "CYAN" "START - dispatch conf"
 sudo -E dispatch-conf
 cecho "CYAN" "END - dispatch conf"

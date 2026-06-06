@@ -143,12 +143,35 @@ cecho "CYAN" "END - install kernel, press enter"
 read -r -p "$*"
 
 cecho "CYAN" "START update initramfs with Dracut"
-dracut --kver="$newKver"
+# Build the initramfs. --force so re-runs overwrite a stale/partial image.
+# This is the single most boot-critical step: with ext4/SATA built as modules,
+# a missing initramfs means the kernel cannot mount root -> kernel panic.
+if ! dracut --force --kver="$newKver"; then
+    cecho "RED" "ERROR: dracut failed for $newKver. Aborting before bootloader update."
+    exit 1
+fi
+initramfsPath="/boot/initramfs-${newKver}.img"
+if [ ! -s "$initramfsPath" ]; then
+    cecho "RED" "ERROR: initramfs not created: $initramfsPath. Aborting before bootloader update."
+    exit 1
+fi
+cecho "GREEN" "initramfs OK: $initramfsPath"
 cecho "CYAN" "END update initramfs with Dracut, press enter "
 read -r -p "$*"
 
 cecho "CYAN" "START - update bootloader"
-grub-mkconfig -o "/boot/grub/grub.cfg"
+if ! grub-mkconfig -o "/boot/grub/grub.cfg"; then
+    cecho "RED" "ERROR: grub-mkconfig failed. Aborting before cleanup."
+    exit 1
+fi
+# Verify the generated config actually loads our initramfs for the new kernel.
+# grub-mkconfig silently emits an entry WITHOUT an initrd line when the image is
+# missing, which boots straight into a panic; catch that here instead of at reboot.
+if ! grep -qE "^[[:space:]]*initrd[[:space:]].*initramfs-${newKver}\.img" "/boot/grub/grub.cfg"; then
+    cecho "RED" "ERROR: grub.cfg has no initrd line for $newKver; the new kernel would panic. Aborting before cleanup."
+    exit 1
+fi
+cecho "GREEN" "grub.cfg references initramfs-${newKver}.img"
 cecho "CYAN" "END - update bootloader, press enter"
 read -r -p "$*"
 
