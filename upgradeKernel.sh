@@ -2,6 +2,13 @@
 
 source "$(dirname "$0")/helper.sh"
 
+# This script writes to /boot, installs modules and runs emerge/grub-mkconfig:
+# it must run as root (it does not use sudo internally).
+if [ "$(id -u)" -ne 0 ]; then
+    cecho "RED" "ERROR: this script must be run as root. Aborting."
+    exit 1
+fi
+
 # Derive the kernel name variants from a source-dir basename (e.g. linux-6.18.33-gentoo-r1):
 #   kernelKver       -> 6.18.33-gentoo-r1-x86_64   (for dracut and /lib/modules)
 #   kernelPkgVersion -> 6.18.33-r1                 (for emerge atoms / world file)
